@@ -1,0 +1,15 @@
+{
+  "name": "simple-static-site",
+  "version": "1.0.0",
+  "description": "A simple static site generator",
+  "main": "index.js",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "serve": "node scripts/serve.js"
+  },
+  "dependencies": {
+    "front-matter": "^4.0.2",
+    "fs-extra": "^10.1.0",
+    "marked": "^4.3.0"
+  }
+}
