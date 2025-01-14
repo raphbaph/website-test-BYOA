@@ -48,7 +48,39 @@ function buildPages() {
     console.log('Found files:', files);
     
     files.forEach(file => {
-        if (file.endsWith('.md')) {
+        if (file === 'index.md') {
+            // Handle index.html separately but keep nav and footer
+            const filePath = path.join(pagesDir, file);
+            const content = fs.readFileSync(filePath, 'utf-8');
+            const { attributes, body } = frontMatter(content);
+            const htmlContent = marked(body);
+            
+            // Extract nav and footer from template
+            const nav = template.match(/<nav>[\s\S]*?<\/nav>/)[0];
+            const footer = template.match(/<footer>[\s\S]*?<\/footer>/)[0];
+            
+            const indexPage = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${attributes.title || 'Home'}</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    ${nav}
+    <main>
+        ${htmlContent}
+    </main>
+    ${footer}
+</body>
+</html>`;
+            
+            const outputPath = path.join(__dirname, '../dist/index.html');
+            fs.writeFileSync(outputPath, indexPage);
+            console.log('✓ Created:', outputPath);
+        } else if (file.endsWith('.md')) {
+            // Handle other pages with the template
             const filePath = path.join(pagesDir, file);
             console.log('Processing:', filePath);
             

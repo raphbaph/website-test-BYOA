@@ -1,7 +1,8 @@
 ---
-title: Welcome to My Site
+title: A Deeper Life
 ---
 
-# Welcome
-
-This is my simple static website. Check out my [blog](/blog) or learn more [about me](/about). 
+<div class="hero">
+    <h1>a deeper meme<br>is here for you</h1>
+    <a href="/about" class="cta-button">Numba go up?</a>
+</div> 
