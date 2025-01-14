@@ -7,6 +7,8 @@ const frontMatter = require('front-matter');
 function checkRequiredFiles() {
     const required = [
         'src/templates/base.html',
+        'src/templates/blog-post.html',
+        'src/templates/blog-index.html',
         'src/content/pages/index.md'
     ];
 
@@ -99,9 +101,21 @@ function buildPages() {
     });
 }
 
-// Build blog posts
+// Add these functions after the existing imports
+function formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+// Update the buildBlog function
 function buildBlog() {
     const blogDir = path.join(__dirname, '../src/content/blog');
+    const blogTemplate = fs.readFileSync(path.join(__dirname, '../src/templates/blog-post.html'), 'utf-8');
+    const blogIndexTemplate = fs.readFileSync(path.join(__dirname, '../src/templates/blog-index.html'), 'utf-8');
+    
     console.log('Looking for blog posts in:', blogDir);
     
     if (!fs.existsSync(blogDir)) {
@@ -110,7 +124,9 @@ function buildBlog() {
     }
 
     const files = fs.readdirSync(blogDir);
+    const posts = [];
     
+    // Process each blog post
     files.forEach(file => {
         if (file.endsWith('.md')) {
             const filePath = path.join(blogDir, file);
@@ -120,8 +136,19 @@ function buildBlog() {
             const { attributes, body } = frontMatter(content);
             const htmlContent = marked(body);
             
-            const page = template
+            // Store post data for the index
+            posts.push({
+                title: attributes.title,
+                date: attributes.date,
+                slug: file.replace('.md', ''),
+                excerpt: attributes.excerpt || body.split('\n')[0]
+            });
+            
+            // Create individual blog post
+            const page = blogTemplate
                 .replace('{{title}}', attributes.title || 'Blog Post')
+                .replace('{{date}}', attributes.date)
+                .replace('{{formattedDate}}', formatDate(attributes.date))
                 .replace('{{content}}', htmlContent);
             
             const outputPath = path.join(__dirname, '../dist/blog', file.replace('.md', '.html'));
@@ -130,6 +157,23 @@ function buildBlog() {
             console.log('✓ Created:', outputPath);
         }
     });
+    
+    // Sort posts by date
+    posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // Create blog index page
+    const postListHTML = posts.map(post => `
+        <div class="post-preview">
+            <h2><a href="/blog/${post.slug}.html">${post.title}</a></h2>
+            <time datetime="${post.date}">${formatDate(post.date)}</time>
+            <p>${post.excerpt}</p>
+        </div>
+    `).join('');
+    
+    const indexPage = blogIndexTemplate.replace('{{posts}}', postListHTML);
+    const indexPath = path.join(__dirname, '../dist/blog/index.html');
+    fs.writeFileSync(indexPath, indexPage);
+    console.log('✓ Created blog index:', indexPath);
 }
 
 try {

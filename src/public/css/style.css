@@ -75,4 +75,61 @@ footer {
     padding: 1rem;
     text-align: center;
     background: transparent;
+}
+
+.blog-index {
+    max-width: 800px;
+    margin: 100px auto;
+    padding: 0 2rem;
+}
+
+.blog-post {
+    max-width: 800px;
+    margin: 100px auto;
+    padding: 0 2rem;
+}
+
+.post-list {
+    margin-top: 2rem;
+}
+
+.post-preview {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.post-preview h2 {
+    margin: 0;
+}
+
+.post-preview time {
+    display: block;
+    margin: 0.5rem 0;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.post-preview a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.post-preview a:hover {
+    text-decoration: underline;
+}
+
+article header {
+    margin-bottom: 2rem;
+}
+
+article time {
+    font-style: italic;
+    opacity: 0.8;
+}
+
+article img {
+    max-width: 100%;
+    height: auto;
+    margin: 2rem 0;
 } 
